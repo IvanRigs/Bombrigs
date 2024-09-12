@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Bombrigs</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        canvas {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; width: 100%; height: 100vh; align-items: center; justify-content: center;">
+        <canvas id="myCanvas" width="1080" height="700" style="border:2px solid black"></canvas>
+    </div>
+    <script>
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const play = new btn(365, 250, 350, 80); // Jugar
+        const multi = new btn(365, 340, 350, 80); // Multijugador
+        const settings = new btn(365, 430, 350, 80); // Configuracion
+        const exit = new btn(365, 520, 350, 80); // Salir
+
+        // Funciones
+        function draw() {
+            
+        }
+
+        // Clases
+        class btn {
+            constructor(x, y, w, h) {
+                this.x = x;
+                this.y = y;
+                this.w = w;
+                this.h = h;
+            }
+        }
+        
+    </script>
+</body>
+</html>
