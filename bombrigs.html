@@ -1,98 +1,16 @@
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Bombrigs</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <style>
-        canvas {
-            background-color: #fff;
-        }
-    </style>
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="assets/IconAi.PNG" type="image/x-icon">
+
 </head>
 <body>
-    <div style="display: flex; width: 100%; height: 100vh; align-items: center; justify-content: center;">
-        <canvas id="myCanvas" width="1080" height="700" style="border:2px solid black"></canvas>
-    </div>
-    <script>
-        const canvas = document.getElementById("myCanvas");
-        const ctx = canvas.getContext("2d");
-        
-        // Clases ----------------------------------------------------------
-        class btn {
-            constructor(id, x, y, w, h, color, texto) {
-                this.id = id;
-                this.x = x;
-                this.y = y;
-                this.w = w;
-                this.h = h;
-                this.color = color;
-                this.texto = texto;
-            }
-        }
-
-        // Creacion de objetos --------------------------------------------
-        var play = new btn(1, 365, 250, 350, 80, "black", "Jugar"); // Jugar
-        var multi = new btn(2, 365, 340, 350, 80, "black", "Multijugador"); // Multijugador
-        var settings = new btn(3, 365, 430, 350, 80, "black", "Configuracion"); // Configuracion
-        var exit = new btn(4, 365, 520, 350, 80, "black", "Salir"); // Salir
-
-        // Inicio Botones -------------------------------------------------
-        drawBtn(play);
-        drawBtn(multi);
-        drawBtn(settings);
-        drawBtn(exit);
-
-        // Funciones ------------------------------------------------------
-        function drawBtn(obj, opc) {
-            ctx.beginPath();
-            if (opc == 1){
-                ctx.fillStyle = obj.color;
-                ctx.fillRect(obj.x, obj.y, obj.w, obj.h)
-            } else {
-                ctx.strokeStyle = obj.color;
-                ctx.strokeRect(obj.x, obj.y, obj.w, obj.h);
-            }
-            ctx.fillStyle = "black";
-            ctx.font = "20px Arial";
-            ctx.textAlign="center";
-            ctx.textBaseline="middle";
-            ctx.fillText(obj.texto, (obj.x + (obj.w / 2)), (obj.y + (obj.h / 2)), obj.w, obj.h);
-        }
-
-        // Indicador del boton presionado
-        function btnInicio(obj) {
-            var x = event.clientX - canvas.getBoundingClientRect().left;
-            var y = event.clientY - canvas.getBoundingClientRect().top;
-
-            if ((x >= obj.x && x <= (obj.w + obj.x)) && (y >= obj.y && y <= (obj.h + obj.y))) {
-                switch(obj.id) {
-                    case 1:
-                        console.log("1");
-                    break;
-                    case 2:
-                        console.log("2");                       
-                    break;
-                    case 3:
-                        console.log("3");
-                    break;
-                    case 4: 
-                        console.log("4");
-                    break;
-                }
-            }
-
-        }
-
-        // Eventos ------------------------------------------------------
-        canvas.addEventListener("click", function(event) {
-            btnInicio(play);
-            btnInicio(multi);
-            btnInicio(settings);
-            btnInicio(exit);
-        });
-        
-    </script>
+        <canvas id="canvas"></canvas>
+        <video id="bg" src="assets/main-screen/intro.mp4" width="0" height="0">
+        <script src="main.js"></script>
 </body>
 </html>

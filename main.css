@@ -1,0 +1,34 @@
+body{ /*Cuerpo principal del html*/
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #333;
+        color: white;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: white;
+        color: black;
+    }
+}
+
+canvas { /*Cuerpo principal del canvas*/
+    background-color: #fff;
+    width: 1080;
+    height: 700;
+}
+
+/*FONTS*/
+
+@font-face {
+    font-family: 'snake';
+    src: url('./assets/fonts/snakethin.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
