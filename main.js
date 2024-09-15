@@ -30,11 +30,9 @@ function draw() {
     animationFrameId = requestAnimationFrame(draw);
 }
 
-// Se asigna funcionalidad a los botones
 function controls(event) {
     switch (event.key) {
         case ' ':
-            console.log("Omitir video"); 
             ready = false;
             loadMainScreen();
             break;
@@ -46,6 +44,7 @@ function loadMainScreen() {
 
     bg.pause();
     bg.currentTime = 0;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     bg.removeEventListener('loadedmetadata', adjustCanvasSize);
     bg.removeEventListener('canplay', startDrawing);
@@ -55,9 +54,6 @@ function loadMainScreen() {
 
     const script = document.createElement('script');
     script.src = 'mainScreen.js';
-    script.onload = function () {
-        console.log("Juego cargado");
-    };
     document.body.appendChild(script);
 }
 
