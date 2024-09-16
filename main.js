@@ -15,7 +15,7 @@ function draw() {
 
     ctx.fillStyle = "black";
     ctx.font = "50px Arial";
-    ctx.fillText("Click para comenzar", 430, 320);
+    ctx.fillText("Click para comenzar", canvas.width/2, 320);
 
     ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "white";
@@ -72,10 +72,7 @@ function startVideo() {
 // Eventos ----------------------------------------------------------
 bg.addEventListener('loadedmetadata', adjustCanvasSize);
 
-bg.addEventListener('loadeddata', function(){
-    console.log(",ssdas");
-    startDrawing();
-});
+bg.addEventListener('loadeddata', startDrawing);
 
 bg.addEventListener('ended', loadMainScreen);
 

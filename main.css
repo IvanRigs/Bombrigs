@@ -9,12 +9,18 @@ body{ /*Cuerpo principal del html*/
         background-color: #333;
         color: white;
     }
+    canvas {
+        box-shadow: 0px 0px 15px rgba(0, 0, 0);
+    }
 }
 
 @media (prefers-color-scheme: light) {
     body {
         background-color: white;
         color: black;
+        canvas {
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+        }
     }
 }
 
