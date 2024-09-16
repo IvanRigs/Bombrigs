@@ -2,38 +2,37 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 // Variables --------------------------------------------------------
-const bg = document.getElementById("bg");
-var ready = false;
+const bg = document.createElement("video");
+bg.src = "assets/main-screen/intro.mov"
 var textH = 588;
 var textState = false;
 var animationFrameId; 
+console.log("2");
 
 // Funciones --------------------------------------------------------
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (bg.readyState > 1 && ready) {
-        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
-        ctx.font = "35px snake";
-        ctx.textAlign = 'center';
 
-        ctx.fillText("Espacio para omitir", canvas.width / 2, textH);
+    ctx.fillStyle = "black";
+    ctx.font = "50px Arial";
+    ctx.fillText("Click para comenzar", 430, 320);
 
-        textState = (textH == canvas.height - 50) ? true : ((textH == canvas.height - 60) ? false : textState);
-        textH = (textState) ? textH - 0.5 : textH + 0.5;
+    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+    ctx.font = "35px snake";
+    ctx.textAlign = 'center';
 
-    } else {
-        ctx.fillStyle = "black";
-        ctx.font = "50px Arial";
-        ctx.fillText("Click para comenzar", 430, 320);
-    }
+    ctx.fillText("Espacio para omitir", canvas.width / 2, textH);
+
+    textState = (textH == canvas.height - 50) ? true : ((textH == canvas.height - 60) ? false : textState);
+    textH = (textState) ? textH - 0.5 : textH + 0.5;
+    
     animationFrameId = requestAnimationFrame(draw);
 }
 
 function controls(event) {
     switch (event.key) {
         case ' ':
-            ready = false;
             loadMainScreen();
             break;
     }
@@ -67,14 +66,16 @@ function startDrawing() {
 }
 
 function startVideo() {
-    ready = true;
     bg.play();
 }
 
 // Eventos ----------------------------------------------------------
 bg.addEventListener('loadedmetadata', adjustCanvasSize);
 
-bg.addEventListener('canplay', startDrawing);
+bg.addEventListener('loadeddata', function(){
+    console.log(",ssdas");
+    startDrawing();
+});
 
 bg.addEventListener('ended', loadMainScreen);
 
