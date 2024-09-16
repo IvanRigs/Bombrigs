@@ -16,6 +16,8 @@ var textX = (canvas.width / 2) - handMaxX;
 
 var bannerY = -195;
 
+var optMS = 0;
+
 requestAnimationFrame(drawMainScreen);
 
 // Funciones --------------------------------------------------------
@@ -40,6 +42,21 @@ function drawMainScreen() {
     ctx.fillText("Empezar juego", canvas.width / 2, 400);
     ctx.fillText("Multijugador", canvas.width / 2, 450);
     ctx.fillText("Configuracion", canvas.width / 2, 500);
+
+    //Opciones en naranja
+    ctx.fillStyle = "#f18f19";
+    ctx.font = "50px snake";
+    switch (optMS) {
+        case 1:
+            ctx.fillText("Empezar juego", canvas.width / 2, 400);
+        break;
+        case 2:
+            ctx.fillText("Multijugador", canvas.width / 2, 450);
+        break;
+        case 3:
+            ctx.fillText("Configuracion", canvas.width / 2, 500);
+        break;
+    }
 
     //Mano
     if (bannerY >= 30){
@@ -77,37 +94,61 @@ function controlsMS(event) {
         case 'W':
         case 'ArrowUp':
             if (handY == 360) {
-                coordsMS(460, 250, 260);
+                coordsMS(460, 250, 260, 3);
             }else if(handY == 460) {
-                coordsMS(410, 245, 255);
+                coordsMS(410, 245, 255, 2);
             }else {
-                coordsMS(360, 270, 280);
+                coordsMS(360, 270, 280, 1);
             }
         break;
         case 'S':
         case 's':
         case 'ArrowDown':
-            console.log("s");
             if (handY == 360) {
-                coordsMS(410, 245, 255);
+                coordsMS(410, 245, 255, 2);
             }else if(handY == 410) {
-                coordsMS(460, 250, 260);
+                coordsMS(460, 250, 260, 3);
             }else {
-                coordsMS(360, 270, 280);
+                coordsMS(360, 270, 280, 1);
             }
         break;
     }
 }
 
-function coordsMS(hY, hMxX, hMnX) {
+function controlsMouseMS(event) {
+    const rect = canvas.getBoundingClientRect();
+    if (event.clientX-rect.left > 454 && 
+        event.clientX-rect.left < 816 && 
+        event.clientY-rect.top > 368 && 
+        event.clientY-rect.top < 400) {
+        optMS = 1;
+    }else if (event.clientX-rect.left > 478 && 
+        event.clientX-rect.left < 795 && 
+        event.clientY-rect.top > 416 && 
+        event.clientY-rect.top < 450) {
+        optMS = 2;
+    }else if (event.clientX-rect.left > 470 && 
+        event.clientX-rect.left < 804 && 
+        event.clientY-rect.top > 468 && 
+        event.clientY-rect.top < 503) {
+        optMS = 3;
+    }else {
+        optMS = 0;
+    }
+}
+
+function coordsMS(hY, hMxX, hMnX, optMS) {
     handY = hY;
     handMaxX = hMxX;
     handMinX = hMnX;
     textX = (canvas.width / 2) - handMaxX;
     const audioHand = new Audio("./assets/sounds/Cursor.wav");
     audioHand.play();
+    this.optMS = optMS;
 }
 
 // Eventos ----------------------------------------------------------
 bgScreenMain.addEventListener('loadedmetadata', adjustCanvasSizeMS);
 document.addEventListener('keydown', controlsMS);
+document.addEventListener('mousemove', controlsMouseMS);
+
