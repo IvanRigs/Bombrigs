@@ -187,7 +187,6 @@ function coordsMS(hY, hMxX, hMnX, optMS) {
 }
 
 function controlsMouseClickMS(event) {
-    console.log("sa");
     controlsMouseMS(event);
     opcSelect(event);
 }

@@ -17,8 +17,6 @@ class Item {
     draw(ctx) {
         if (this.img.complete) { 
             ctx.drawImage(this.img, 136 + this.x, this.y, this.width, this.height);
-        } else {
-            console.log("Imagen aún no cargada.");
         }
     }
 
@@ -39,6 +37,12 @@ battletheme.volume = 0.6;
 battletheme.play();
 var time0;
 var time1;
+var timeBomb = 0;
+var timeExplosion = 0;
+var timeGame = performance.now();
+var bombaBoolean = false;
+var bombaCand = true;
+var explosion = false;
 
 const steps = new Audio("./assets/sounds/Walking1.wav");
 
@@ -90,6 +94,23 @@ for (var i = 192; i <= 576; i += 96) {
     }
 }
 
+//Bloque destruible x912 y624
+const wallDes = [];
+var xW = 240;
+var yW = 96
+for (var i = 0; i <= 13; i++) {
+    wallDes.push(new Item(xW, yW, 48, 48, "assets/battleOne/wallD1.png"));
+    xW += 48;
+}
+for (var i = 0; i <= 5; i++) {
+    yW += 96;
+    xW = 48;
+    for (var z = 0; z <= 16; z++) {
+        xW += 48;
+        wallDes.push(new Item(xW, yW, 48, 48, "assets/battleOne/wallD1.png")); 
+    } 
+}
+
 // Player
 const player = new Item(97, 60, 38, 64, "./assets/battleOne/bomb1.png");
 //player animaciones PATH
@@ -97,6 +118,9 @@ var plyerA = ["assets/battleOne/bomb1.png", "assets/battleOne/bomb2.png", "asset
 
 player.animationClockX = player.x;
 player.animationClockY = player.y;
+
+//Bomba
+const bomba = new Item(48, 48, 48, 48, "./assets/battleOne/bomba1.png");
 
 // Funciones --------------------------------------------------------
 function drawStartGame() {
@@ -141,6 +165,72 @@ function drawStartGame() {
         floors.draw(ctx);
     });
 
+    wallDes.forEach(function(wall, i, array){
+        wall.draw(ctx);
+        while (wall.collision(player)) {
+            switch (player.direction) {
+                case 'up':
+                    player.y = player.y + 1;
+                    break;
+                case 'down':
+                    player.y = player.y - 1;
+                    break;
+                case 'right':
+                    player.x = player.x - 1;
+                break;
+                case 'left':
+                    player.x = player.x + 1;
+                break;       
+            }
+        }
+    });
+
+    if (bombaBoolean) {
+        if (!bombaCand) {
+            bomba.x = Math.round(player.x / 48) * 48;
+            bomba.y = Math.round(player.y / 48) * 48;
+        }
+        bomba.draw(ctx);
+        bombaCand = true;
+        bombaF();
+    }
+
+    if (explosion) {
+        // Crear las 4 áreas de la explosión en forma de +
+        var explosionUp = new Item(bomba.x, bomba.y - 48, bomba.width, bomba.height, "assets/battleOne/homer1.png");
+        var explosionDown = new Item(bomba.x, bomba.y + 48, bomba.width, bomba.height, "assets/battleOne/homer1.png");
+        var explosionRight = new Item(bomba.x + 48, bomba.y, bomba.width, bomba.height, "assets/battleOne/homer1.png");
+        var explosionLeft = new Item(bomba.x - 48, bomba.y, bomba.width, bomba.height, "assets/battleOne/homer1.png");
+
+        wallDes.forEach(function(wall, i) {
+            // Ver coordenadas de la explosión y del bloque para debugging
+            console.log(`Bloque ${i}: (${wall.x}, ${wall.y}, ${wall.width}, ${wall.height})`);
+            console.log(`Explosión abajo: (${explosionDown.x}, ${explosionDown.y}, ${explosionDown.width}, ${explosionDown.height})`);
+
+            // Si alguna de las explosiones colisiona con un bloque, lo eliminamos
+            if (colision(wall, explosionUp)) {
+                wallDes.splice(i, 1);
+                console.log("Bloque destruido arriba");
+            }
+            if (colision(wall, explosionDown)) {
+                wallDes.splice(i, 1);
+                console.log("Bloque destruido abajo");
+            }
+            if (colision(wall, explosionRight)) {
+                wallDes.splice(i, 1);
+                console.log("Bloque destruido derecha");
+            }
+            if (colision(wall, explosionLeft)) {
+                wallDes.splice(i, 1);
+                console.log("Bloque destruido izquierda");
+            }
+        });
+         
+        // Restablecer la explosión
+        explosion = false;
+    }
+    
+
     if ((player.img.src.includes(plyerA[0]) ||
     player.img.src.includes(plyerA[3]) ||
     player.img.src.includes(plyerA[6]) ||
@@ -157,10 +247,36 @@ function drawStartGame() {
         player.draw(ctx);
     }
 
+    ctx.font = "30px snake";
+    ctx.strokeStyle = "white";
+    ctx.fillText("W", 69, 45, 30, 30);
+    ctx.strokeRect(47, 12, 40, 40);
+    ctx.fillText("A", 25, 90, 30, 30);
+    ctx.strokeRect(3, 60, 40, 40);
+    ctx.fillText("S", 70, 90, 30, 30);
+    ctx.strokeRect(47, 60, 40, 40);
+    ctx.fillText("D", 115, 90, 30, 30);
+    ctx.strokeRect(91, 60, 40, 40);
+    ctx.fillText("SPACE", 70, 140);
+    ctx.strokeRect(5, 110, 127, 40);
+
+    ctx.font = "20px snake";
+    var time = Math.trunc((performance.now() - timeGame) / 1000);
+    ctx.fillText("Time: " + time +"s", 70, 175);
+
     animationFrameId = requestAnimationFrame(drawStartGame);
 }
 
 requestAnimationFrame(drawStartGame);
+
+function colision(objectOne, objectTwo) {
+    return (
+        ((objectOne.x + objectOne.width) >= objectTwo.x) &&
+        ((objectTwo.x + objectTwo.width) >= objectOne.x) &&
+        ((objectOne.y + objectOne.height) >= objectTwo.y) &&
+        ((objectTwo.y + objectTwo.height) >= objectOne.y)
+    )
+}
 
 function controlsSG(event) {    
     switch(event.key) {
@@ -192,24 +308,60 @@ function controlsSG(event) {
             player.direction = "left";
             playerAnimation(10, 11);
         break;
+        case ' ':
+            if (!bombaBoolean) {
+                bombaBoolean = true;
+                bombaCand = false;
+            }
+        break;
+        case '+': //mecanica especial
+           player.speed += 1;
+        break;
+        case '-':
+            player.speed -= 1;
+        break;
     }
 }
 
-function homer() {
+function bombaF() {
+    if (timeBomb == 0){
+        timeBomb = performance.now();
+        timeExplosion = performance.now();
+        bomba.img.src = "assets/battleOne/bomba1.png";
+    }else if (((performance.now() - timeBomb) <= 300)){
+        bomba.img.src = "assets/battleOne/bomba2.png";
+    }else if (((performance.now() - timeBomb) <= 600)){
+        bomba.img.src = "assets/battleOne/bomba3.png";
+    }else if (((performance.now() - timeBomb) <= 900)){
+        bomba.img.src = "assets/battleOne/bomba1.png";
+    }else if (((performance.now() - timeBomb) <= 1200)){
+        timeBomb = performance.now();
+    }
+
+    console.log("3")
+    if ((performance.now() - timeExplosion) >= 3600) {
+        bombaBoolean = false;
+        timeBomb = 0;
+        timeExplosion = 0;
+        explosion = true;
+    }
+}
+
+function homer() {  //mecanica especial 
     if (performance.now() - time0 <= 10000){
-        player.img.src = "assets/battleOne/homer1.png"
+        player.img.src = "assets/battleOne/homer1.png";
     }else if (performance.now() - time0 <= 10100){
         player.width = 45;
-        player.img.src = "assets/battleOne/homer2.png"
+        player.img.src = "assets/battleOne/homer2.png";
     }else if ((performance.now() - time0 <= 10200) || (performance.now() - time1 <= 100)){
         player.width = 38;
-        player.img.src = "assets/battleOne/homer3.png"
+        player.img.src = "assets/battleOne/homer3.png";
     }else if ((performance.now() - time0 <= 10300) || (performance.now() - time1 <= 200)){
-        player.img.src = "assets/battleOne/homer4.png"
+        player.img.src = "assets/battleOne/homer4.png";
     }else if ((performance.now() - time0 <= 10400) || (performance.now() - time1 <= 300)){
-        player.img.src = "assets/battleOne/homer5.png"
+        player.img.src = "assets/battleOne/homer5.png";
     }else if ((performance.now() - time0 <= 10500) || (performance.now() - time1 <= 400)){
-        player.img.src = "assets/battleOne/homer6.png"
+        player.img.src = "assets/battleOne/homer6.png";
         time1 = performance.now();
     }
     
@@ -260,7 +412,6 @@ function backPlayer() {
     player.img.src.includes(plyerA[11])){
         player.img.src = plyerA[9];
     }
-    console.log("zsdadzz")
     time0 = performance.now();
 }
 
