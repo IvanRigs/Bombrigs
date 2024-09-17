@@ -7,7 +7,6 @@ bg.src = "assets/main-screen/intro.mov"
 var textH = 588;
 var textState = false;
 var animationFrameId; 
-console.log("2");
 
 // Funciones --------------------------------------------------------
 function draw() {

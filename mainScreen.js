@@ -80,7 +80,7 @@ function drawMainScreen() {
     ctx.fillText("By Ivan Rios", canvas.width / 2, 630);
 
 
-    requestAnimationFrame(drawMainScreen);
+    animationFrameId = requestAnimationFrame(drawMainScreen);
 }
 
 function adjustCanvasSizeMS() {
@@ -88,6 +88,7 @@ function adjustCanvasSizeMS() {
     canvas.height = bgScreenMain.videoHeight;
 }
 
+// Controles teclado
 function controlsMS(event) {
     switch(event.key) {
         case 'w':
@@ -112,9 +113,47 @@ function controlsMS(event) {
                 coordsMS(360, 270, 280, 1);
             }
         break;
+        case 'Enter':
+            opcSelect();
+        break;
     }
 }
 
+function opcSelect() {
+    switch (optMS) {
+        case 1:
+            loadstartGame();
+        break;
+        case 2:
+            // TODO falta implementar multijugador
+            console.log("2");
+        break;
+        case 3:
+            // TODO falta implementar Configuracion
+            console.log("3");
+        break;
+    }
+}
+
+// Cargar juego
+function loadstartGame() {
+    cancelAnimationFrame(animationFrameId); 
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    bgScreenMain.removeEventListener('loadedmetadata', adjustCanvasSize);
+    document.removeEventListener('keydown', controlsMS);
+    canvas.removeEventListener('mousemove', controlsMouseMS);
+    canvas.removeEventListener('click', controlsMouseClickMS);
+
+    audio.pause();
+
+    const script = document.createElement('script');
+    script.src = 'startGame.js';
+    document.body.appendChild(script);
+}
+
+// Controles mouse
 function controlsMouseMS(event) {
     const rect = canvas.getBoundingClientRect();
     if (event.clientX-rect.left > 454 && 
@@ -147,8 +186,16 @@ function coordsMS(hY, hMxX, hMnX, optMS) {
     this.optMS = optMS;
 }
 
+function controlsMouseClickMS(event) {
+    console.log("sa");
+    controlsMouseMS(event);
+    opcSelect(event);
+}
+
 // Eventos ----------------------------------------------------------
 bgScreenMain.addEventListener('loadedmetadata', adjustCanvasSizeMS);
 document.addEventListener('keydown', controlsMS);
-document.addEventListener('mousemove', controlsMouseMS);
+canvas.addEventListener('mousemove', controlsMouseMS);
+canvas.addEventListener('click', controlsMouseClickMS)
+
 
