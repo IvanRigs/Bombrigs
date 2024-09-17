@@ -8,6 +8,9 @@ class Item {
         this.img = new Image(); 
         this.img.src = imagePath;
         this.speed = 5;
+        this.animationClockX = 0;
+        this.animationClockXTwo = 0;
+        this.animationSpeed = 25;
     }
 
     draw(ctx) {
@@ -44,6 +47,10 @@ const floor2 = new Item(48, 96, 48, 48, "./assets/battleOne/pasto2.png");
 const wall1 = new Item(48, 48, 48, 48, "./assets/battleOne/wall1.png");
 
 const player = new Item(144, 22, 48, 74, "./assets/battleOne/bombfrent1.png");
+//player animaciones PATH
+var plyerA = ["assets/battleOne/bombfrent1.png", "assets/battleOne/bombfrent2.png", "assets/battleOne/bombfrent3.png"];
+player.animationClockX = player.x;
+player.animationClockY = player.y;
 
 // Funciones --------------------------------------------------------
 function drawStartGame() {
@@ -67,42 +74,61 @@ function drawStartGame() {
     console.log(wall1.collision(player));
     player.draw(ctx);
 
-    player.img = "./assets/battleOne/bombfrent1.png";
-
     animationFrameId = requestAnimationFrame(drawStartGame);
 }
 
 requestAnimationFrame(drawStartGame);
 
-function controlsSG(event) {
+function controlsSG(event) {    
     switch(event.key) {
         case 'w':
         case 'W':
         case 'ArrowUp':
-            player.y -= player.speed; 
+            player.y -= player.speed;
         break;
         case 'S':
         case 's':
         case 'ArrowDown':
-            player.y += player.speed; 
+            player.y += player.speed;
         break;
         case 'd':
         case 'D':
         case 'ArrowRight':
-            player.x += player.speed; 
+            player.x += player.speed;
         break;
         case 'a':
         case 'A':
         case 'ArrowLeft':
-            player.x -= player.speed; 
+            player.x -= player.speed;
         break;
+    }
+
+    if (moved) {
+        playerAnimation(event);
     }
 }
 
-function playerAnimation(event) {
-    
+function playerAnimation(aO, aT, aTh) {
+    // Animacion para abajo
+    if (player.img.src.includes(plyerA[0])) {
+        player.img.src = plyerA[aO];
+        player.animationClockY = player.y + player.animationSpeed;
+        console.log("1")
+    } else if (player.img.src.includes(plyerA[1]) &&
+     player.y >= player.animationClockY) {
+        player.img.src = plyerA[aT];
+        player.animationClockY = player.y + player.animationSpeed;
+        console.log("2")
+    } else if (player.img.src.includes(plyerA[2]) &&
+    player.y >= player.animationClockY) {
+        player.img.src = plyerA[aTh];
+        player.animationClockY = player.y + player.animationSpeed;
+        console.log("3")
+    }
 }
 
 // Eventos ----------------------------------------------------------
 document.addEventListener("keydown", controlsSG);
-document.addEventListener("keydown", playerAnimation);
+document.addEventListener("keyup", function(){
+    player.img.src = plyerA[0];
+});
